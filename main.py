@@ -13,7 +13,7 @@ def main():
         print("4. Quit")
 
         # Taking the user's choice.
-        choice = input("Enter your choice (1/2/3/4/5): ")
+        choice = input("Enter your choice (1/2/3/4): ")
 
         # Based on the user's choice, run the corresponding game using subprocess.
         # subprocess.run() is used to run shell commands, in this case, to execute the Python game files.
