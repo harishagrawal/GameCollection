@@ -78,3 +78,7 @@ while turns > 0:
 
 		if turns == 0:
 			print("You Loose")
+
+# Driver code
+if __name__ == '__main__':
+	play()

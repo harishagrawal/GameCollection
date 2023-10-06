@@ -54,8 +54,8 @@ def check_win(player1, player2, p1score, p2score):
 # Function for playing the game.
 def play():
 	# enter player1 and player2 name
-	p1name = input("player 1, Please enter your name :")
-	p2name = input("Player 2 , Please enter your name: ")
+	p1name = input("Player 1, Please enter your name :")
+	p2name = input("Player 2 , Please enter your name:")
 
 	# variable for counting score.
 	pp1 = 0
@@ -154,9 +154,6 @@ def play():
 				thank(p1name, p2name, pp1, pp2)
 				break
 
-
 # Driver code
 if __name__ == '__main__':
-
-	# play() function calling
 	play()
