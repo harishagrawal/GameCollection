@@ -1,52 +1,32 @@
 
-# List of questions for quiz
-
-questions = [
-    'who is the developer of Python Language',
-    'when did india gets independence',
-    'what is the Indian currency',
-    'Who is World first cloned human baby',
-    'who is the founder of Hinduism'
-]
-
-# list of answers for above questions
-
-answers = [
-    'Guido Van',
-    '1947',
-    'INR',
-    'Eve',
-    'No Specific'
-]
-
-#  List of options for above questions
-
-options = [
-    ['Dennis Ritchie', 'Alan Frank', 'Guido Van', 'Albert'],
-    ['1947', '1995', '1950', '1957'],
-    ['DOLLARS', 'YEN', 'EURO', 'INR'],
-    ['Erik', 'Maria', 'Sophie', 'Eve'],
-    ['Mahavira Swami', 'Mahatma Buddha', 'No Specific', 'Prophet Mohammed']
-]
-
-# Quiz Game | Designed by Ishita
+import requests
+import random
 
 #  Defining function for game playing
 
-
-def play_game(username, questions, answers, options):
+def play_game_kb(username, kb):
     print("Hello,", username, "welcome to the QUIZ game")
     print("All the Best for the Game :>")
     score = 0
-    for i in range(5):
-        current_questions = questions[i]
-        # print(questions[i])
-        correct_answer = answers[i]
-        current_question_options = options[i]
-        print("Questions:", current_questions)
+    for qset in kb:
+        current_question = qset['question']
+        correct_answer = qset['correctAnswer']
+        current_question_options = qset['incorrectAnswers']
+        current_question_options.append(correct_answer)
+        random.shuffle(current_question_options)
+        print("Question:", current_question)
+        user_options = list()
         for index, each_options in enumerate(current_question_options):
             print(index+1, ") ", each_options, sep='')
-        user_answer_index = int(input("Please enter your choice(1,2,3,4): "))
+            user_options.append(str(index+1))
+        user_answer_index = 0
+        option_list = ','.join(user_options)
+
+        while str(user_answer_index) not in user_options:
+            try:
+                user_answer_index = int(input(f"Please enter your choice({option_list}): "))
+            except Exception as e:
+                print(f"Invalid input => [{e}]")
         user_answer = current_question_options[user_answer_index-1]
         if user_answer == correct_answer:
             print("correct answer")
@@ -57,8 +37,8 @@ def play_game(username, questions, answers, options):
     print("Your final score is", score)
     return username, score
 
-# Defining function for viewing the score
 
+# Defining function for viewing the score
 
 def view_scores(names_and_scores):
     for name, score in names_and_scores.items():
@@ -66,16 +46,17 @@ def view_scores(names_and_scores):
 
 # Defining the function for start of the score
 
-
-def quiz(questions, answers, options):
-    names_and_scores = {}
+def quiz_kb(kb):
+    names_and_scores = dict()
     while True:
         print("Welcome to the quiz game")
         print("1) Play\n2) View Scores\n3) Exit")
         choice = int(input("Please enter your choice: "))
         if choice == 1:
-            username = (input("Please enter your name: "))
-            username, score = play_game(username, questions, answers, options)
+            username = ''
+            while username.strip() == "":
+                username = input("Please enter your name: ")
+            username, score = play_game_kb(username, kb)
             names_and_scores[username] = score
         elif choice == 2:
             view_scores(names_and_scores)
@@ -84,7 +65,39 @@ def quiz(questions, answers, options):
         else:
             print("Your choice is not correct")
 
+
+# get quiz questions
+def setup_kb():
+    knowledge_base = list()
+    qset = {
+        "category": "Programming",
+        "id": "",
+        "correctAnswer": "Guido Van",
+        "incorrectAnswers": [
+        "Dennis Ritchie",
+        "Alan Frank",
+        "Albert"
+        ],
+        "question": "Who is the developer of Python Language?",
+        "tags": [
+        "technical",
+        "programming",
+        "python"
+        ],
+        "type": "Multiple Choice",
+        "difficulty": "medium",
+        "regions": [],
+        "isNiche": False
+    }
+    response = requests.get('https://the-trivia-api.com/api/questions/')
+    if response.status_code == 200:
+        knowledge_base = response.json()
+    else:
+        knowledge_base.append(qset)    
+    return knowledge_base
+
 #  Program execution starts from here
 
-
-quiz(questions, answers, options)
+if __name__ == '__main__':
+    knowledge_base = setup_kb()
+    quiz_kb(knowledge_base)
