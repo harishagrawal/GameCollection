@@ -8,17 +8,23 @@ def play_game_kb(username, kb):
     print("Hello,", username, "welcome to the QUIZ game")
     print("All the Best for the Game :>")
     score = 0
+    random.shuffle(kb)
     for qset in kb:
         current_question = qset['question']
         correct_answer = qset['correctAnswer']
         current_question_options = qset['incorrectAnswers']
-        current_question_options.append(correct_answer)
+        if correct_answer not in current_question_options:
+            current_question_options.append(correct_answer)
         random.shuffle(current_question_options)
         print("Question:", current_question)
         user_options = list()
         for index, each_options in enumerate(current_question_options):
             print(index+1, ") ", each_options, sep='')
             user_options.append(str(index+1))
+        exit_option = len(current_question_options)+1
+        print(exit_option, ") ", 'Exit', sep='')
+        user_options.append(str(exit_option))
+
         user_answer_index = 0
         option_list = ','.join(user_options)
 
@@ -27,12 +33,15 @@ def play_game_kb(username, kb):
                 user_answer_index = int(input(f"Please enter your choice({option_list}): "))
             except Exception as e:
                 print(f"Invalid input => [{e}]")
+        if user_answer_index == exit_option:
+            print("Bye\n")
+            break
         user_answer = current_question_options[user_answer_index-1]
         if user_answer == correct_answer:
-            print("correct answer")
+            print("correct answer\n")
             score = score + 100
         else:
-            print("wrong answer")
+            print("Wrong Answer!!! \n => Correct answer is", correct_answer)
             break
     print("Your final score is", score)
     return username, score
@@ -49,7 +58,7 @@ def view_scores(names_and_scores):
 def quiz_kb(kb):
     names_and_scores = dict()
     while True:
-        print("Welcome to the quiz game")
+        print("\nWelcome to the quiz game")
         print("1) Play\n2) View Scores\n3) Exit")
         choice = int(input("Please enter your choice: "))
         if choice == 1:
