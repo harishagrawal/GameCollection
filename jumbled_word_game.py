@@ -13,7 +13,7 @@ def choose_a_word():
 	# list of word
 	words = ['rainbow', 'computer', 'science', 'programming',
 			'mathematics', 'player', 'condition', 'reverse',
-			'water', 'board', 'geeks']
+			'water', 'board', 'account', 'administration', 'affect', 'agency', 'beyond']
 
 	# choice() method randomly choose
 	# any word from the list.
@@ -80,8 +80,8 @@ def ask(player_name, turn, picked_word):
 	ans = input(f" * [Word:{turn}] {player_name}, what do you think, it is? =>")
 	return (ans == picked_word)
 
-def get_player_turn(player_list, turn):
-    return (len(player_list) % turn)
+# def get_player_turn(player_list, turn):
+#     return (len(player_list) % turn)
 
 def continue_playing():
 	user_response = input("""Ready to PLAY JUMBLED WORDS !!!      ===>  (press 'x' to quit ...) <=== 
@@ -93,8 +93,8 @@ def continue_playing():
 
 def play_turn(turn, picked_word):
 		num_players = len(players)
-		original_chance = turn % num_players
-		player_position = original_chance
+		player_position = turn % num_players
+		# player_position = original_chance
 
 		player_order = players[player_position:] + players[:player_position]
 		got_it = False
