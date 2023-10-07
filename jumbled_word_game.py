@@ -3,9 +3,13 @@
 # import random module
 import random
 
+# Global scope
+players = list()
+score = dict()
+
 
 # function for choosing random word.
-def choose():
+def choose_a_word():
 	# list of word
 	words = ['rainbow', 'computer', 'science', 'programming',
 			'mathematics', 'player', 'condition', 'reverse',
@@ -14,13 +18,12 @@ def choose():
 	# choice() method randomly choose
 	# any word from the list.
 	pick = random.choice(words)
-
 	return pick
 
 
 # Function for shuffling the
 # characters of the chosen word.
-def jumble(word):
+def jumble_it(word):
 	# sample() method shuffling the characters of the word
 	random_word = random.sample(word, len(word))
 
@@ -29,131 +32,119 @@ def jumble(word):
 	jumbled = ''.join(random_word)
 	return jumbled
 
+# Function for declaring winner
+def check_win():
+	winner = ''
+	winner_score = 0
+    # # hits = [ v for v in score.values() ]
+	# # biggest_hit = hits.sort(reverse=True)[0]
+	# winners = list()
+	for (player, strike) in score.items():
+		if strike < winner_score:
+			winner_score = strike
+			winner = player
+		# if strike == biggest_hit:
+		# 	winners.append(player)
+	if winner == '':
+		print('Nobody won')
+	else:
+		print(f'{winner} won with {winner_score} hits')
+	# print(','.join(winners), 'got the highest score', biggest_hit)
+
+
 
 # Function for showing final score.
-def thank(p1n, p2n, p1, p2):
-	print(p1n, 'Your score is :', p1)
-	print(p2n, 'Your score is :', p2)
+def thank_you_all():
+	# print("Thanks to ", ",".join(players))
+	winning_score = 0
+	per_score = dict()
+	for p in players:
+		print(f"{p}'s score is {score[p]}")
+		if not per_score.get(score[p]):
+			per_score[score[p]] = [p]
+		else:
+			per_score[score[p]].append(p)
+		if score[p] > winning_score:
+			winning_score = score[p]
+	
+	print(f'Winning score is {winning_score}')
+	print('And the winner(s) are', ','.join(per_score[winning_score]))
+
 
 	# check_win() function calling
-	check_win(p1n, p2n, p1, p2)
+	# check_win()
+	print('Thanks for playing !!!', ",".join(players).upper())
 
-	print('Thanks for playing...')
+def ask(player_name, turn, picked_word):
+	# print(f'"{player_name}", it is your Turn.')
+	ans = input(f" * [Word:{turn}] {player_name}, what do you think, it is? =>")
+	return (ans == picked_word)
 
+def get_player_turn(player_list, turn):
+    return (len(player_list) % turn)
 
-# Function for declaring winner
-def check_win(player1, player2, p1score, p2score):
-	if p1score > p2score:
-		print("winner is :", player1)
-	elif p2score > p1score:
-		print("winner is :", player2)
+def continue_playing():
+	user_response = input("""Ready to PLAY JUMBLED WORDS !!!      ===>  (press 'x' to quit ...) <=== 
+""")
+	if user_response and user_response.upper() == 'X':
+		return False
 	else:
-		print("Draw..Well Played guys..")
+		return True
 
+def play_turn(turn, picked_word):
+		num_players = len(players)
+		original_chance = turn % num_players
+		player_position = original_chance
 
-# Function for playing the game.
-def play():
-	# enter player1 and player2 name
-	p1name = input("Player 1, Please enter your name :")
-	p2name = input("Player 2 , Please enter your name:")
+		player_order = players[player_position:] + players[:player_position]
+		got_it = False
+		for player in player_order:
+			if (ask(player, turn, picked_word)):
+				print(f'You got it right, {player}')
+				score[player] += 1
+				got_it = True
+				break
+		
+		if not got_it:
+			print("Better luck next time...correct word is :", picked_word)
 
-	# variable for counting score.
-	pp1 = 0
-	pp2 = 0
-
+def play_game():
 	# variable for counting turn
 	turn = 0
+	while continue_playing():
+		picked_word = choose_a_word()
+		scrambled = jumble_it(picked_word)
+		print("jumbled word is :", scrambled)
+		# original_chance = get_player_turn(players, turn)
+		play_turn(turn, picked_word)
+		turn += 1
+	print(f'Played {turn} scrambled words')
 
-	# keep looping
+# Function for playing the game.
+def setup_game():
 	while True:
+		user_txt = input("Enter Player Name OR xx to finish adding players:")
+		if user_txt.lower() == 'xx':
+			break
+		elif user_txt != '':
+			if user_txt not in players:
+				players.append(user_txt)
+	
+	num_players = len(players)
+	if num_players > 0:
+		print('Players:', players)
+		for p in players:
+			score[p] = 0
+	else:
+		print("Sorry, can't play without players")
+		return
 
-		# choose() function calling
-		picked_word = choose()
-
-		# jumble() function calling
-		qn = jumble(picked_word)
-		print("jumbled word is :", qn)
-
-		# checking turn is odd or even
-		if turn % 2 == 0:
-
-			# if turn no. is even
-			# player1 turn
-			print(p1name, 'Your Turn.')
-
-			ans = input("what is in your mind? ")
-
-			# checking ans is equal to picked_word or not
-			if ans == picked_word:
-
-				# incremented by 1
-				pp1 += 1
-
-				print('Your score is :', pp1)
-				turn += 1
-
-			else:
-				print("Better luck next time ..")
-
-				# player 2 turn
-				print(p2name, 'Your turn.')
-
-				ans = input('what is in your mind? ')
-
-				if ans == picked_word:
-					pp2 += 1
-					print("Your Score is :", pp2)
-
-				else:
-					print("Better luck next time...correct word is :", picked_word)
-
-				c = int(input("press 1 to continue and 0 to quit :"))
-
-				# checking the c is equal to 0 or not
-				# if c is equal to 0 then break out
-				# of the while loop o/w keep looping.
-				if c == 0:
-					# thank() function calling
-					thank(p1name, p2name, pp1, pp2)
-					break
-
-		else:
-
-			# if turn no. is odd
-			# player2 turn
-			print(p2name, 'Your turn.')
-			ans = input('what is in your mind? ')
-
-			if ans == picked_word:
-				pp2 += 1
-				print("Your Score is :", pp2)
-				turn += 1
-
-			else:
-				print("Better luck next time.. :")
-				print(p1name, 'Your turn.')
-				ans = input('what is in your mind? ')
-
-				if ans == picked_word:
-					pp1 += 1
-					print("Your Score is :", pp1)
-
-				else:
-					print("Better luck next time...correct word is :", picked_word)
-
-					c = int(input("press 1 to continue and 0 to quit :"))
-
-					if c == 0:
-						# thank() function calling
-						thank(p1name, p2name, pp1, pp2)
-						break
-
-			c = int(input("press 1 to continue and 0 to quit :"))
-			if c == 0:
-				# thank() function calling
-				thank(p1name, p2name, pp1, pp2)
-				break
+	# Play the game, now that we have players
+	play_game()
+	
+	# Exit by showing all the scores and winner(s)
+	thank_you_all()
 
 # Driver code
 if __name__ == '__main__':
-	play()
+	setup_game()
