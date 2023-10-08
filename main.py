@@ -8,8 +8,7 @@ def main():
         print("Choose a game to play:")
         print("1. Mastermind")
         print("2. Jumbled Word Game")
-        print("3. Word Guessing Game")
-        # print("4. 2048 Game")
+        print("3. Trivia Quiz")
         print("4. Quit")
 
         # Taking the user's choice.
@@ -25,11 +24,8 @@ def main():
             # Run the jumbled word game.
             subprocess.run(["python", "jumbled_word_game.py"])
         elif choice == "3":
-            # Run the word guessing game.
-            subprocess.run(["python", "word_guessing_game.py"])
-        # elif choice == "4":
-        #     # Run the 2048 game.
-        #     subprocess.run(["python", "2048.py"])
+            # Run the quiz game.
+            subprocess.run(["python", "quiz_game.py"])
         elif choice == "4":
             # Exit the loop, thereby ending the program.
             print("Thanks for playing!")
