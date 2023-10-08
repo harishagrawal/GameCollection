@@ -1,4 +1,3 @@
-
 import requests
 import random
 
@@ -9,6 +8,7 @@ def play_game_kb(username, kb):
     print("All the Best for the Game :>")
     score = 0
     random.shuffle(kb)
+    exit = False
     for qset in kb:
         current_question = qset['question']
         correct_answer = qset['correctAnswer']
@@ -35,6 +35,7 @@ def play_game_kb(username, kb):
                 print(f"Invalid input => [{e}]")
         if user_answer_index == exit_option:
             print("Bye\n")
+            exit = True
             break
         user_answer = current_question_options[user_answer_index-1]
         if user_answer == correct_answer:
@@ -44,7 +45,7 @@ def play_game_kb(username, kb):
             print("Wrong Answer!!! \n => Correct answer is", correct_answer)
             break
     print("Your final score is", score)
-    return username, score
+    return score, exit
 
 
 # Defining function for viewing the score
@@ -55,7 +56,7 @@ def view_scores(names_and_scores):
 
 # Defining the function for start of the score
 
-def quiz_kb(kb):
+def quiz_kb():
     names_and_scores = dict()
     while True:
         print("\nWelcome to the quiz game")
@@ -65,8 +66,12 @@ def quiz_kb(kb):
             username = ''
             while username.strip() == "":
                 username = input("Please enter your name: ")
-            username, score = play_game_kb(username, kb)
+            knowledge_base = setup_kb()
+            score, exit = play_game_kb(username, knowledge_base)
             names_and_scores[username] = score
+            if exit:
+                break
+
         elif choice == 2:
             view_scores(names_and_scores)
         elif choice == 3:
@@ -108,5 +113,4 @@ def setup_kb():
 #  Program execution starts from here
 
 if __name__ == '__main__':
-    knowledge_base = setup_kb()
-    quiz_kb(knowledge_base)
+    quiz_kb()
